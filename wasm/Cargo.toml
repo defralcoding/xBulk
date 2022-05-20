@@ -1,0 +1,28 @@
+[package]
+name = "elrond-bulk-wasm"
+version = "0.0.1"
+authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
+edition = "2021"
+publish = false
+
+[lib]
+crate-type = [ "cdylib",]
+
+[workspace]
+
+[profile.release]
+codegen-units = 1
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+
+[dependencies.elrond-bulk]
+path = ".."
+
+[dependencies.elrond-wasm-node]
+version = "0.31.1"
+
+[dependencies.elrond-wasm-output]
+version = "0.31.1"
+features = ["wasm-output-mode"]

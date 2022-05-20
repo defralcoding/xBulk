@@ -1,0 +1,15 @@
+[package]
+name = "elrond-bulk"
+version = "0.0.1"
+authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
+edition = "2021"
+publish = false
+
+[lib]
+path = "src/elrondbulk.rs"
+
+[dependencies.elrond-wasm]
+version = "0.31.1"
+
+[dev-dependencies.elrond-wasm-debug]
+version = "0.31.1"
