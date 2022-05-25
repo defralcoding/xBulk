@@ -1,8 +1,8 @@
 {
     "configurations": {
         "default": {
-            "proxy": "https://devnet-api.elrond.com",
-            "chainID": "D"
+            "proxy": "https://api.elrond.com",
+            "chainID": "1"
         }
     },
     "contract":{
@@ -11,6 +11,7 @@
             "bytecode": "output/elrond-bulk.wasm",
             "recall-nonce": true,
             "ledger": true,
+            "ledger-address-index": 3,
             "gas-limit": 59999999,
             "send": true,
             "outfile": "deploy-testnet.interaction.json"
