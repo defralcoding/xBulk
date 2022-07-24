@@ -3,7 +3,6 @@
 ////////////////////////////////////////////////////
 
 #![no_std]
-#![feature(generic_associated_types)]
 
 elrond_wasm_node::wasm_endpoints! {
     elrond_bulk

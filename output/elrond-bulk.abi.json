@@ -1,0 +1,44 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.63.0-nightly",
+            "commitHash": "cd282d7f75da9080fda0f1740a729516e7fbec68",
+            "commitDate": "2022-05-18",
+            "channel": "Nightly",
+            "short": "rustc 1.63.0-nightly (cd282d7f7 2022-05-18)"
+        },
+        "contractCrate": {
+            "name": "elrond-bulk",
+            "version": "0.0.1",
+            "git_version": "e82c1fe-modified"
+        },
+        "framework": {
+            "name": "elrond-wasm",
+            "version": "0.31.1"
+        }
+    },
+    "name": "ElrondBulk",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "bulksend",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
+                    "type": "variadic<multi<Address,BigUint>>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        }
+    ],
+    "hasCallback": false,
+    "types": {}
+}

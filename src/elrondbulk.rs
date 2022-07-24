@@ -2,7 +2,7 @@
 
 elrond_wasm::imports!();
 
-#[elrond_wasm::contract]
+#[elrond_wasm::derive::contract]
 pub trait ElrondBulk {
     
     #[init]
@@ -14,6 +14,7 @@ pub trait ElrondBulk {
         &self,
         #[payment_token] payment_token: TokenIdentifier,
         #[payment_amount] payment_amount: BigUint,
+        #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
     ) {
 
@@ -31,7 +32,7 @@ pub trait ElrondBulk {
 
         for destination in destinations {
             let (address_to_send, amount_to_send) = destination.into_tuple();
-            self.send().direct(&address_to_send, &payment_token, 0, &amount_to_send, b"");
+            self.send().direct(&address_to_send, &payment_token, nonce, &amount_to_send, b"");
         }
 
     }

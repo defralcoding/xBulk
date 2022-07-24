@@ -8,7 +8,7 @@ Insert the list of transactions and send EGLD or ESDTs to thousands of wallets i
 
 ### Easy way
 
-The tool is live on the Elrond Mainnet at https://elrondbulk.com
+The tool is live at https://elrondbulk.com
 
 You can login using your preferred login method, insert the list of transactions to send (it's also possible to upload a CSV file) and sign your transaction.
 
@@ -57,7 +57,7 @@ MultiESDTNFTTransfer@00000000000000000500a4a2eedfb2766ee977cf644aff544214a00397f
 ```
 ## Roadmap
 
-We plan to add support for SFTs and Meta-ESDTs with the following releases.
+We plan to add support for multiple tokens for each transaction with the following releases, as well as other tools for giveaways.
 
 ## Contact us
 
