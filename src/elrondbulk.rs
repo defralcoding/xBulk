@@ -1,9 +1,11 @@
 #![no_std]
 
+use core::ops::Deref;
 elrond_wasm::imports!();
 
+
 #[elrond_wasm::derive::contract]
-pub trait ElrondBulk {
+pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
     
     #[init]
     fn init(&self) { }
@@ -12,7 +14,7 @@ pub trait ElrondBulk {
     #[endpoint]
     fn bulksend(
         &self,
-        #[payment_token] payment_token: TokenIdentifier,
+        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
         #[payment_amount] payment_amount: BigUint,
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
@@ -32,8 +34,35 @@ pub trait ElrondBulk {
 
         for destination in destinations {
             let (address_to_send, amount_to_send) = destination.into_tuple();
-            self.send().direct(&address_to_send, &payment_token, nonce, &amount_to_send, b"");
+            self.send().direct(&address_to_send, &payment_token, nonce, &amount_to_send);
         }
+
+    }
+    
+    #[endpoint]
+    #[payable("*")]
+    fn draw(
+        &self,
+        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
+        participants: MultiValueEncoded<ManagedAddress>,
+    ) {
+
+        let mut rand_source = RandomnessSource::<Self::Api>::new();
+
+        //TODO check if number of participants is greater than number of winnings
+        //TODO check winner can't win twice
+
+        for payment in &payments {
+            let rand_index = rand_source.next_usize_in_range(0, participants.len());
+            let part_vecs = participants.to_vec();
+            let winner_item = part_vecs.get(rand_index);
+            let winner = winner_item.deref().clone();
+
+            let token_payment = EgldOrEsdtTokenPayment::from(payment);
+
+            self.send().direct(&winner, &token_payment.token_identifier, token_payment.token_nonce, &token_payment.amount);
+        }
+        
 
     }
 

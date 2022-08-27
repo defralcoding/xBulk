@@ -10,11 +10,11 @@
         "contractCrate": {
             "name": "elrond-bulk",
             "version": "0.0.1",
-            "git_version": "e82c1fe-modified"
+            "git_version": "f52c276-modified"
         },
         "framework": {
             "name": "elrond-wasm",
-            "version": "0.31.1"
+            "version": "0.34.1"
         }
     },
     "name": "ElrondBulk",
@@ -37,8 +37,43 @@
                 }
             ],
             "outputs": []
+        },
+        {
+            "name": "draw",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "participants",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "dnsRegister",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "dns_address",
+                    "type": "Address"
+                },
+                {
+                    "name": "name",
+                    "type": "bytes"
+                }
+            ],
+            "outputs": []
         }
     ],
+    "events": [],
     "hasCallback": false,
     "types": {}
 }

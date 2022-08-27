@@ -8,6 +8,8 @@ elrond_wasm_node::wasm_endpoints! {
     elrond_bulk
     (
         bulksend
+        dnsRegister
+        draw
     )
 }
 

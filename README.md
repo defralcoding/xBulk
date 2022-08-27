@@ -14,7 +14,7 @@ You can login using your preferred login method, insert the list of transactions
 
 When sending more than 400 transactions you will need to sign multiple SC calls in order to avoid having gas issues.
 
-Note: due to technical limitations you can't send lots of transactions when logging with Web Wallet.
+Note: due to technical limitations you can't send more than 80 transactions when logging with Web Wallet.
 
 ### Advanced way
 
@@ -55,11 +55,13 @@ Transaction data field:
 ```
 MultiESDTNFTTransfer@00000000000000000500a4a2eedfb2766ee977cf644aff544214a00397f66ce2@01@5745422d356430386265@@10a741a462780000@62756c6b73656e64@6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7a@10a741a462780000
 ```
-## Roadmap
+# Draws
 
-We plan to add support for multiple tokens for each transaction with the following releases, as well as other tools for giveaways.
+ElrondBulk also allows to make the draws for your giveaways in the most trasparent and easy way!
 
-## Contact us
+Insert the list of the partecipants and the prizes you want to send, the smart contract will extract the list of winners and send them the prizes automatically.
+
+# Contact us
 
 You can get in touch with us in our [Telegram Chat](https://t.me/tortugastaking)
 
