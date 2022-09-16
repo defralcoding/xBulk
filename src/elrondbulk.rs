@@ -66,4 +66,32 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
 
     }
 
+    #[payable("*")]
+    #[endpoint(nftDistribution)]
+    fn nft_distribution(
+        &self,
+        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
+        destinations: MultiValueEncoded<ManagedAddress>,
+    ) {
+
+        require!(
+            payments.len() == destinations.len(),
+            "The number of NFTs must be equal to the number of destinations"
+        );
+
+        let destinations_vec = destinations.to_vec();
+
+        for i in 0..payments.len() {
+            
+            let payment = payments.get(i);
+            let destination = destinations_vec.get(i);
+
+            let token_payment = EgldOrEsdtTokenPayment::from(payment);
+
+            self.send().direct(&destination, &token_payment.token_identifier, token_payment.token_nonce, &token_payment.amount);
+
+        }
+
+    }
+
 }

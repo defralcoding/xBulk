@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "elrond-bulk",
             "version": "0.0.1",
-            "git_version": "f52c276-modified"
+            "git_version": "228442e-modified"
         },
         "framework": {
             "name": "elrond-wasm",
@@ -47,6 +47,21 @@
             "inputs": [
                 {
                     "name": "participants",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "nftDistribution",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
                     "type": "variadic<Address>",
                     "multi_arg": true
                 }
