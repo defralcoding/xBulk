@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "elrond-bulk",
             "version": "0.0.1",
-            "git_version": "228442e-modified"
+            "git_version": "b5d6abe-modified"
         },
         "framework": {
             "name": "elrond-wasm",
