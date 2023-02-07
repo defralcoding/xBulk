@@ -3,13 +3,11 @@
 use core::ops::Deref;
 elrond_wasm::imports!();
 
-
 #[elrond_wasm::derive::contract]
 pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
-    
     #[init]
-    fn init(&self) { }
-    
+    fn init(&self) {}
+
     #[payable("*")]
     #[endpoint]
     fn bulksend(
@@ -19,7 +17,6 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
     ) {
-
         let mut amount_to_spend = BigUint::from(0u64);
 
         for destination in destinations.clone() {
@@ -34,11 +31,20 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
 
         for destination in destinations {
             let (address_to_send, amount_to_send) = destination.into_tuple();
-            self.send().direct(&address_to_send, &payment_token, nonce, &amount_to_send);
-        }
+            self.send()
+                .direct(&address_to_send, &payment_token, nonce, &amount_to_send);
 
+            let contract_call: ContractCall<Self::Api, ()> = ContractCallWithEgldOrSingleEsdt::new(
+                address_to_send,
+                ManagedBuffer::new_from_bytes(b"test"),
+                payment_token.clone(),
+                nonce,
+                amount_to_send.clone(),
+            );
+            contract_call.async_call().call_and_exit();
+        }
     }
-    
+
     #[endpoint]
     #[payable("*")]
     fn draw(
@@ -46,11 +52,7 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         participants: MultiValueEncoded<ManagedAddress>,
     ) {
-
         let mut rand_source = RandomnessSource::<Self::Api>::new();
-
-        //TODO check if number of participants is greater than number of winnings
-        //TODO check winner can't win twice
 
         for payment in &payments {
             let rand_index = rand_source.next_usize_in_range(0, participants.len());
@@ -60,10 +62,13 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
 
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
-            self.send().direct(&winner, &token_payment.token_identifier, token_payment.token_nonce, &token_payment.amount);
+            self.send().direct(
+                &winner,
+                &token_payment.token_identifier,
+                token_payment.token_nonce,
+                &token_payment.amount,
+            );
         }
-        
-
     }
 
     #[payable("*")]
@@ -73,7 +78,6 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         destinations: MultiValueEncoded<ManagedAddress>,
     ) {
-
         require!(
             payments.len() == destinations.len(),
             "The number of NFTs must be equal to the number of destinations"
@@ -82,16 +86,17 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
         let destinations_vec = destinations.to_vec();
 
         for i in 0..payments.len() {
-            
             let payment = payments.get(i);
             let destination = destinations_vec.get(i);
 
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
-            self.send().direct(&destination, &token_payment.token_identifier, token_payment.token_nonce, &token_payment.amount);
-
+            self.send().direct(
+                &destination,
+                &token_payment.token_identifier,
+                token_payment.token_nonce,
+                &token_payment.amount,
+            );
         }
-
     }
-
 }

@@ -1,4 +1,4 @@
-USER_PEM="wallet-owner.pem"
+USER_PEM="~/wallets/development.pem"
 PROXY="https://devnet-gateway.elrond.com"
 CHAIN_ID="D"
 
@@ -11,7 +11,7 @@ deploy() {
 }
 
 upgrade() {
-    erdpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq7qdqsuq4a4pga2hxa5h0gvluf7hlc6hndn3q32jth5 --project=${PROJECT} \
+    erdpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq6u7pd47w4wy9dc5m9ax28vg3mggec63l4jwsdukkjq --project=${PROJECT} \
     --recall-nonce --pem=${USER_PEM} \
     --gas-limit=50000000 \
     --send --outfile="deploy.interaction.json" \
