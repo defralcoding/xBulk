@@ -33,15 +33,6 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
             let (address_to_send, amount_to_send) = destination.into_tuple();
             self.send()
                 .direct(&address_to_send, &payment_token, nonce, &amount_to_send);
-
-            let contract_call: ContractCall<Self::Api, ()> = ContractCallWithEgldOrSingleEsdt::new(
-                address_to_send,
-                ManagedBuffer::new_from_bytes(b"test"),
-                payment_token.clone(),
-                nonce,
-                amount_to_send.clone(),
-            );
-            contract_call.async_call().call_and_exit();
         }
     }
 

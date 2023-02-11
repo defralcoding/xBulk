@@ -1,0 +1,16 @@
+{
+    "context": "multiversx/sdk-rust-contract-builder:v4.1.2",
+    "elrond-bulk": {
+        "version": "0.0.1",
+        "codehash": "edb9bb069f04ca4613579fd3e1713d4abe2a6dd810e4e57cfbda0203722cdfbd",
+        "buildPath": "",
+        "artifacts": {
+            "bytecode": "elrond-bulk.wasm",
+            "text": "elrond-bulk.wat",
+            "abi": "elrond-bulk.abi.json",
+            "imports": "elrond-bulk.imports.json",
+            "srcPackage": "elrond-bulk-0.0.1.source.json",
+            "outputArchive": ""
+        }
+    }
+}

@@ -1,0 +1,93 @@
+{
+    "buildInfo": {
+        "rustc": {
+            "version": "1.66.0-nightly",
+            "commitHash": "b8c35ca26b191bb9a9ac669a4b3f4d3d52d97fb1",
+            "commitDate": "2022-10-15",
+            "channel": "Nightly",
+            "short": "rustc 1.66.0-nightly (b8c35ca26 2022-10-15)"
+        },
+        "contractCrate": {
+            "name": "elrond-bulk",
+            "version": "0.0.1"
+        },
+        "framework": {
+            "name": "elrond-wasm",
+            "version": "0.34.1"
+        }
+    },
+    "name": "ElrondBulk",
+    "constructor": {
+        "inputs": [],
+        "outputs": []
+    },
+    "endpoints": [
+        {
+            "name": "bulksend",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
+                    "type": "variadic<multi<Address,BigUint>>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "draw",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "participants",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "nftDistribution",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
+            "name": "dnsRegister",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "payableInTokens": [
+                "EGLD"
+            ],
+            "inputs": [
+                {
+                    "name": "dns_address",
+                    "type": "Address"
+                },
+                {
+                    "name": "name",
+                    "type": "bytes"
+                }
+            ],
+            "outputs": []
+        }
+    ],
+    "events": [],
+    "hasCallback": false,
+    "types": {}
+}
