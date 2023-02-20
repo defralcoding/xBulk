@@ -36,6 +36,23 @@ pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
         }
     }
 
+    #[payable("*")]
+    #[endpoint(bulksendSameAmount)]
+    fn bulksend_same_amount(
+        &self,
+        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
+        #[payment_amount] payment_amount: BigUint,
+        #[payment_nonce] nonce: u64,
+        destinations: MultiValueEncoded<ManagedAddress>,
+    ) {
+        let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
+
+        for destination in destinations {
+            self.send()
+                .direct(&destination, &payment_token, nonce, &amount_to_send);
+        }
+    }
+
     #[endpoint]
     #[payable("*")]
     fn draw(
@@ -43,16 +60,27 @@ pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         participants: MultiValueEncoded<ManagedAddress>,
     ) {
+        let part_vecs = participants.to_vec();
         let mut rand_source = RandomnessSource::<Self::Api>::new();
 
-        for payment in &payments {
-            let rand_index = rand_source.next_usize_in_range(0, participants.len());
-            let part_vecs = participants.to_vec();
-            let winner_item = part_vecs.get(rand_index);
-            let winner = winner_item.deref().clone();
+        let mut winners: ManagedVec<ManagedAddress> = ManagedVec::new();
 
+        for payment in &payments {
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
+            //draw until we find a winner that has not already won
+            let mut winner_item =
+                part_vecs.get(rand_source.next_usize_in_range(0, participants.len()));
+            while winners.contains(&winner_item) {
+                winner_item = part_vecs.get(rand_source.next_usize_in_range(0, participants.len()));
+            }
+
+            let winner = winner_item.deref().clone();
+
+            //add the winner to the winners array
+            winners.push(winner.clone());
+
+            //send the token to the winner
             self.send().direct(
                 &winner,
                 &token_payment.token_identifier,
@@ -88,23 +116,6 @@ pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
                 token_payment.token_nonce,
                 &token_payment.amount,
             );
-        }
-    }
-
-    #[payable("*")]
-    #[endpoint(bulksendSameAmount)]
-    fn bulksend_same_amount(
-        &self,
-        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
-        #[payment_amount] payment_amount: BigUint,
-        #[payment_nonce] nonce: u64,
-        destinations: MultiValueEncoded<ManagedAddress>,
-    ) {
-        let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
-
-        for destination in destinations {
-            self.send()
-                .direct(&destination, &payment_token, nonce, &amount_to_send);
         }
     }
 }

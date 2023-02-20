@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "xbulk",
             "version": "0.0.1",
-            "git_version": "1ab58b0-modified"
+            "git_version": "43ef7e0-modified"
         },
         "framework": {
             "name": "elrond-wasm",
@@ -39,6 +39,21 @@
             "outputs": []
         },
         {
+            "name": "bulksendSameAmount",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
             "name": "draw",
             "mutability": "mutable",
             "payableInTokens": [
@@ -55,21 +70,6 @@
         },
         {
             "name": "nftDistribution",
-            "mutability": "mutable",
-            "payableInTokens": [
-                "*"
-            ],
-            "inputs": [
-                {
-                    "name": "destinations",
-                    "type": "variadic<Address>",
-                    "multi_arg": true
-                }
-            ],
-            "outputs": []
-        },
-        {
-            "name": "bulksendSameAmount",
             "mutability": "mutable",
             "payableInTokens": [
                 "*"
