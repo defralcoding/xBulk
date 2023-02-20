@@ -4,7 +4,7 @@ use core::ops::Deref;
 elrond_wasm::imports!();
 
 #[elrond_wasm::derive::contract]
-pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
+pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
     #[init]
     fn init(&self) {}
 

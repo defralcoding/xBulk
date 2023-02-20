@@ -1,5 +1,5 @@
 [package]
-name = "elrond-bulk-wasm"
+name = "xbulk-wasm"
 version = "0.0.1"
 authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
 edition = "2021"
@@ -17,7 +17,7 @@ lto = true
 debug = false
 panic = "abort"
 
-[dependencies.elrond-bulk]
+[dependencies.xbulk]
 path = ".."
 
 [dependencies.elrond-wasm-node]

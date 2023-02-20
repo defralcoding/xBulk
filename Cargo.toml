@@ -1,12 +1,12 @@
 [package]
-name = "elrond-bulk"
+name = "xbulk"
 version = "0.0.1"
 authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
 edition = "2021"
 publish = false
 
 [lib]
-path = "src/elrondbulk.rs"
+path = "src/xbulk.rs"
 
 [dependencies.elrond-wasm]
 version = "0.34.1"

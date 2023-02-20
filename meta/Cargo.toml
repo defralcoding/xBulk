@@ -1,5 +1,5 @@
 [package]
-name = "elrond-bulk-meta"
+name = "xbulk-meta"
 version = "0.0.0"
 edition = "2021"
 publish = false
@@ -7,7 +7,7 @@ authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
 
 [dev-dependencies]
 
-[dependencies.elrond-bulk]
+[dependencies.xbulk]
 path = ".."
 
 [dependencies.elrond-wasm-debug]
