@@ -1,23 +1,22 @@
 {
     "buildInfo": {
         "rustc": {
-            "version": "1.67.0-nightly",
-            "commitHash": "53e4b9dd74c29cc9308b8d0f10facac70bb101a7",
-            "commitDate": "2022-12-04",
+            "version": "1.66.0-nightly",
+            "commitHash": "b8c35ca26b191bb9a9ac669a4b3f4d3d52d97fb1",
+            "commitDate": "2022-10-15",
             "channel": "Nightly",
-            "short": "rustc 1.67.0-nightly (53e4b9dd7 2022-12-04)"
+            "short": "rustc 1.66.0-nightly (b8c35ca26 2022-10-15)"
         },
         "contractCrate": {
             "name": "xbulk",
-            "version": "0.0.1",
-            "git_version": "43ef7e0-modified"
+            "version": "1.0.0"
         },
         "framework": {
             "name": "elrond-wasm",
             "version": "0.34.1"
         }
     },
-    "name": "XBulk",
+    "name": "xBulk",
     "constructor": {
         "inputs": [],
         "outputs": []

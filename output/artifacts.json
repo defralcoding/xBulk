@@ -1,0 +1,16 @@
+{
+    "context": "multiversx/sdk-rust-contract-builder:v4.1.2",
+    "xbulk": {
+        "version": "1.0.0",
+        "codehash": "14d02b32e75be7b0a067f3b71575e30d472355b467b029e4184990b643021e2a",
+        "buildPath": "",
+        "artifacts": {
+            "bytecode": "xbulk.wasm",
+            "text": "xbulk.wat",
+            "abi": "xbulk.abi.json",
+            "imports": "xbulk.imports.json",
+            "srcPackage": "xbulk-1.0.0.source.json",
+            "outputArchive": ""
+        }
+    }
+}

@@ -35,6 +35,35 @@ upgrade_testnet() {
     --proxy="https://testnet-gateway.elrond.com" --chain=T || return
 }
 
+upgrade_mainnet_all() {
+    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgqtnksqd6rs4a74mf4un5h2w2tt5lanfmaayxqs35jth --bytecode="output/elrond-bulk/elrond-bulk.wasm" \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --gas-limit=100000000 \
+    --send --outfile="deploy.interaction.json" \
+    --proxy="https://gateway.elrond.com" --chain=1 
+
+    sleep 10
+
+    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgqwcv369k9x49ve3qlu0h5qe949w7m6gcxh42scqtdpf --bytecode="output/elrond-bulk/elrond-bulk.wasm" \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --gas-limit=100000000 \
+    --send --outfile="deploy.interaction.json" \
+    --proxy="https://gateway.elrond.com" --chain=1 
+
+    sleep 10
+
+    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --bytecode="output/elrond-bulk/elrond-bulk.wasm" \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --gas-limit=100000000 \
+    --send --outfile="deploy.interaction.json" \
+    --proxy="https://gateway.elrond.com" --chain=1 
+    
+    || return
+}
+
 upgrade_mainnet_2() {
     mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --bytecode="output/elrond-bulk/elrond-bulk.wasm" \
     --recall-nonce \
