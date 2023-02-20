@@ -36,10 +36,10 @@ upgrade_testnet() {
 }
 
 upgrade_mainnet_2() {
-    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --project=${PROJECT} \
+    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --bytecode="output/elrond-bulk/elrond-bulk.wasm" \
     --recall-nonce \
     --ledger --ledger-address-index 3 \
-    --gas-limit=20000000 \
+    --gas-limit=100000000 \
     --send --outfile="deploy.interaction.json" \
     --proxy="https://gateway.elrond.com" --chain=1 || return
 }

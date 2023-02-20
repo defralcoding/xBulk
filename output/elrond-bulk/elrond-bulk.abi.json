@@ -68,6 +68,21 @@
             "outputs": []
         },
         {
+            "name": "bulksendSameAmount",
+            "mutability": "mutable",
+            "payableInTokens": [
+                "*"
+            ],
+            "inputs": [
+                {
+                    "name": "destinations",
+                    "type": "variadic<Address>",
+                    "multi_arg": true
+                }
+            ],
+            "outputs": []
+        },
+        {
             "name": "dnsRegister",
             "onlyOwner": true,
             "mutability": "mutable",

@@ -90,4 +90,21 @@ pub trait ElrondBulk: elrond_wasm_modules::dns::DnsModule {
             );
         }
     }
+
+    #[payable("*")]
+    #[endpoint(bulksendSameAmount)]
+    fn bulksend_same_amount(
+        &self,
+        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
+        #[payment_amount] payment_amount: BigUint,
+        #[payment_nonce] nonce: u64,
+        destinations: MultiValueEncoded<ManagedAddress>,
+    ) {
+        let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
+
+        for destination in destinations {
+            self.send()
+                .direct(&destination, &payment_token, nonce, &amount_to_send);
+        }
+    }
 }
