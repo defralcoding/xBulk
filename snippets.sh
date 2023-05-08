@@ -1,11 +1,12 @@
 USER_PEM="~/wallets/development.pem"
-PROXY="https://devnet-gateway.elrond.com"
-CHAIN_ID="D"
+PROXY="https://testnet-gateway.multiversx.com"
+CHAIN_ID="T"
 
 deploy() {
-    mxpy --verbose contract deploy --project=${PROJECT} \
-    --recall-nonce --pem=${USER_PEM} \
-    --gas-limit=59999999 \
+    mxpy --verbose contract deploy --bytecode="output/xbulk/xbulk.wasm" \
+    --recall-nonce \
+    --pem=${USER_PEM} \
+    --gas-limit=40000000 \
     --send --outfile="deploy.interaction.json" \
     --proxy=${PROXY} --chain=${CHAIN_ID} || return
 }
@@ -24,7 +25,7 @@ upgrade_devnet() {
     --ledger --ledger-address-index 3 \
     --gas-limit=50000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://devnet-gateway.elrond.com" --chain=D || return
+    --proxy="https://devnet-gateway.multiversx.com" --chain=D || return
 }
 upgrade_testnet() {
     mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --project=${PROJECT} \
@@ -32,7 +33,7 @@ upgrade_testnet() {
     --ledger --ledger-address-index 3 \
     --gas-limit=50000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://testnet-gateway.elrond.com" --chain=T || return
+    --proxy="https://testnet-gateway.multiversx.com" --chain=T || return
 }
 
 upgrade_mainnet_all() {
@@ -41,7 +42,7 @@ upgrade_mainnet_all() {
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://gateway.elrond.com" --chain=1 
+    --proxy="https://gateway.multiversx.com" --chain=1 
 
     sleep 10
 
@@ -50,7 +51,7 @@ upgrade_mainnet_all() {
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://gateway.elrond.com" --chain=1 
+    --proxy="https://gateway.multiversx.com" --chain=1 
 
     sleep 10
 
@@ -59,7 +60,7 @@ upgrade_mainnet_all() {
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://gateway.elrond.com" --chain=1 || return
+    --proxy="https://gateway.multiversx.com" --chain=1 || return
 }
 
 verify_mainnet_all() {
@@ -79,13 +80,43 @@ verify_mainnet_all() {
     --ledger --ledger-address-index 3 || return
 }
 
+claimrewards_mainnet_all() {
+    mxpy --verbose contract call erd1qqqqqqqqqqqqqpgqtnksqd6rs4a74mf4un5h2w2tt5lanfmaayxqs35jth \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --function="ClaimDeveloperRewards" \
+    --gas-limit=6000000 \
+    --send \
+    --proxy="https://gateway.multiversx.com" --chain=1 
+
+    sleep 10
+
+    mxpy --verbose contract call erd1qqqqqqqqqqqqqpgqwcv369k9x49ve3qlu0h5qe949w7m6gcxh42scqtdpf \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --function="ClaimDeveloperRewards" \
+    --gas-limit=6000000 \
+    --send \
+    --proxy="https://gateway.multiversx.com" --chain=1 
+
+    sleep 10
+
+    mxpy --verbose contract call erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 \
+    --recall-nonce \
+    --ledger --ledger-address-index 3 \
+    --function="ClaimDeveloperRewards" \
+    --gas-limit=6000000 \
+    --send \
+    --proxy="https://gateway.multiversx.com" --chain=1 || return
+}
+
 upgrade_mainnet_2() {
     mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5j3wahajwehwja70v39074zzzjsq89lkdn3qp3j2f9 --bytecode="output/xbulk/xbulk.wasm" \
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
     --send --outfile="deploy.interaction.json" \
-    --proxy="https://gateway.elrond.com" --chain=1 || return
+    --proxy="https://gateway.multiversx.com" --chain=1 || return
 }
 
 verify_mainnet_2() {
