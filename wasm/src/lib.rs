@@ -11,6 +11,7 @@ elrond_wasm_node::wasm_endpoints! {
         bulksendSameAmount
         dnsRegister
         draw
+        getOwner
         nftDistribution
     )
 }

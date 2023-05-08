@@ -4,9 +4,27 @@ use core::ops::Deref;
 elrond_wasm::imports!();
 
 #[elrond_wasm::derive::contract]
-pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
+pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
     #[init]
-    fn init(&self) {}
+    fn init(&self, owner: OptionalValue<ManagedAddress>) {
+        if let Some(o) = owner.into_option() {
+            self.owner().set(&o);
+        }
+    }
+
+    #[view(getOwner)]
+    #[storage_mapper("owner")]
+    fn owner(&self) -> SingleValueMapper<ManagedAddress>;
+
+    fn require_owner(&self) {
+        let owner = self.owner();
+        if !owner.is_empty() {
+            require!(
+                owner.get() == self.blockchain().get_caller(),
+                "Only the owner can call this function"
+            );
+        }
+    }
 
     #[payable("*")]
     #[endpoint]
@@ -17,6 +35,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
     ) {
+        self.require_owner();
+
         let mut amount_to_spend = BigUint::from(0u64);
 
         for destination in destinations.clone() {
@@ -45,6 +65,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<ManagedAddress>,
     ) {
+        self.require_owner();
+
         let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
 
         for destination in destinations {
@@ -60,6 +82,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         participants: MultiValueEncoded<ManagedAddress>,
     ) {
+        self.require_owner();
+
         let part_vecs = participants.to_vec();
         let mut rand_source = RandomnessSource::<Self::Api>::new();
 
@@ -97,6 +121,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         destinations: MultiValueEncoded<ManagedAddress>,
     ) {
+        self.require_owner();
+
         require!(
             payments.len() == destinations.len(),
             "The number of NFTs must be equal to the number of destinations"

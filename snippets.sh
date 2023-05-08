@@ -1,6 +1,6 @@
 USER_PEM="~/wallets/development.pem"
-PROXY="https://testnet-gateway.multiversx.com"
-CHAIN_ID="T"
+PROXY="https://devnet-gateway.multiversx.com"
+CHAIN_ID="D"
 
 deploy() {
     mxpy --verbose contract deploy --bytecode="output/xbulk/xbulk.wasm" \
@@ -12,7 +12,7 @@ deploy() {
 }
 
 upgrade() {
-    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq6u7pd47w4wy9dc5m9ax28vg3mggec63l4jwsdukkjq --project=${PROJECT} \
+    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5pcnd76mzhmwur2efw3jn9nngyq098nc4jws3nma3z --project=${PROJECT} \
     --recall-nonce --pem=${USER_PEM} \
     --gas-limit=50000000 \
     --send --outfile="deploy.interaction.json" \
