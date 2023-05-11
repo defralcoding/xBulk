@@ -1,14 +1,13 @@
 [package]
 name = "xbulk-meta"
-version = "1.0.0"
+version = "2.0.0"
 edition = "2021"
 publish = false
-authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
+authors = ["Alessandro De Franceschi <info@defralcoding.it>"]
 
 [dev-dependencies]
-
 [dependencies.xbulk]
 path = ".."
 
-[dependencies.elrond-wasm-debug]
-version = "0.34.1"
+[dependencies.multiversx-sc-meta]
+version = "0.41.0"

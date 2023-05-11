@@ -1,10 +1,10 @@
 #![no_std]
 
 use core::ops::Deref;
-elrond_wasm::imports!();
+multiversx_sc::imports!();
 
-#[elrond_wasm::derive::contract]
-pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
+#[multiversx_sc::derive::contract]
+pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
     #[init]
     fn init(&self, new_owner: OptionalValue<ManagedAddress>) {
         if let Some(o) = new_owner.into_option() {
@@ -89,17 +89,17 @@ pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
     #[payable("*")]
     fn draw(
         &self,
-        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         participants: MultiValueEncoded<ManagedAddress>,
+        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
     ) {
         self.require_owner();
 
         let part_vecs = participants.to_vec();
-        let mut rand_source = RandomnessSource::<Self::Api>::new();
+        let mut rand_source = RandomnessSource::new();
 
         let mut winners: ManagedVec<ManagedAddress> = ManagedVec::new();
 
-        for payment in &payments {
+        for payment in payments.deref() {
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
             //draw until we find a winner that has not already won
@@ -128,8 +128,8 @@ pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
     #[endpoint(nftDistribution)]
     fn nft_distribution(
         &self,
-        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         destinations: MultiValueEncoded<ManagedAddress>,
+        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
     ) {
         self.require_owner();
 

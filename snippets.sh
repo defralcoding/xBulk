@@ -5,7 +5,7 @@ CHAIN_ID="D"
 CONTRACT_ADDRESS="erd1qqqqqqqqqqqqqpgqt9ldfqyctu5v8kk8ypedlx0vjxk9u3we4jws70wdch"
 
 deploy() {
-    mxpy --verbose contract deploy --bytecode="output/xbulk/xbulk.wasm" \
+    mxpy --verbose contract deploy --bytecode="output/xbulk.wasm" \
     --recall-nonce \
     --pem=${USER_PEM} \
     --gas-limit=40000000 \

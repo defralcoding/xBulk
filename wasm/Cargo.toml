@@ -1,28 +1,22 @@
 [package]
 name = "xbulk-wasm"
-version = "1.0.0"
-authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
+version = "2.0.0"
+authors = ["Alessandro De Franceschi <info@defralcoding.it>"]
 edition = "2021"
 publish = false
 
 [lib]
-crate-type = [ "cdylib",]
+crate-type = ["cdylib"]
 
 [workspace]
-
 [profile.release]
 codegen-units = 1
 opt-level = "z"
 lto = true
 debug = false
 panic = "abort"
-
 [dependencies.xbulk]
 path = ".."
 
-[dependencies.elrond-wasm-node]
-version = "0.34.1"
-
-[dependencies.elrond-wasm-output]
-version = "0.34.1"
-features = ["wasm-output-mode"]
+[dependencies.multiversx-sc-wasm-adapter]
+version = "0.41.0"
