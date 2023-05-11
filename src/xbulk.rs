@@ -6,22 +6,32 @@ elrond_wasm::imports!();
 #[elrond_wasm::derive::contract]
 pub trait XBulk: elrond_wasm_modules::dns::DnsModule {
     #[init]
-    fn init(&self, owner: OptionalValue<ManagedAddress>) {
-        if let Some(o) = owner.into_option() {
-            self.owner().set(&o);
+    fn init(&self, new_owner: OptionalValue<ManagedAddress>) {
+        if let Some(o) = new_owner.into_option() {
+            self.owners().insert(o);
         }
     }
 
-    #[view(getOwner)]
-    #[storage_mapper("owner")]
-    fn owner(&self) -> SingleValueMapper<ManagedAddress>;
+    #[view(getOwners)]
+    #[storage_mapper("owners")]
+    fn owners(&self) -> UnorderedSetMapper<ManagedAddress>;
+
+    #[only_owner]
+    #[endpoint(addOwner)]
+    fn add_owner(&self, new_owner: ManagedAddress) {
+        require!(
+            !self.owners().contains(&new_owner),
+            "The address is already an owner"
+        );
+        self.owners().insert(new_owner);
+    }
 
     fn require_owner(&self) {
-        let owner = self.owner();
-        if !owner.is_empty() {
+        let owners = self.owners();
+        if !owners.is_empty() {
             require!(
-                owner.get() == self.blockchain().get_caller(),
-                "Only the owner can call this function"
+                owners.contains(&self.blockchain().get_caller()),
+                "You are not allowed to call this method on this contract"
             );
         }
     }

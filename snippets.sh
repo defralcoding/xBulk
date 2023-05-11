@@ -2,6 +2,8 @@ USER_PEM="~/wallets/development.pem"
 PROXY="https://devnet-gateway.multiversx.com"
 CHAIN_ID="D"
 
+CONTRACT_ADDRESS="erd1qqqqqqqqqqqqqpgqt9ldfqyctu5v8kk8ypedlx0vjxk9u3we4jws70wdch"
+
 deploy() {
     mxpy --verbose contract deploy --bytecode="output/xbulk/xbulk.wasm" \
     --recall-nonce \
@@ -12,11 +14,17 @@ deploy() {
 }
 
 upgrade() {
-    mxpy --verbose contract upgrade erd1qqqqqqqqqqqqqpgq5pcnd76mzhmwur2efw3jn9nngyq098nc4jws3nma3z --project=${PROJECT} \
+    mxpy --verbose contract upgrade ${CONTRACT_ADDRESS} --project=${PROJECT} \
     --recall-nonce --pem=${USER_PEM} \
     --gas-limit=50000000 \
     --send --outfile="deploy.interaction.json" \
     --proxy=${PROXY} --chain=${CHAIN_ID} || return
+}
+
+getgenerico() {
+    echo owners
+    mxpy contract query ${CONTRACT_ADDRESS} \
+    --function "getOwners" --proxy=${PROXY} || return
 }
 
 upgrade_devnet() {

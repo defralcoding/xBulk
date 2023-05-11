@@ -7,11 +7,12 @@
 elrond_wasm_node::wasm_endpoints! {
     xbulk
     (
+        addOwner
         bulksend
         bulksendSameAmount
         dnsRegister
         draw
-        getOwner
+        getOwners
         nftDistribution
     )
 }

@@ -10,7 +10,7 @@
         "contractCrate": {
             "name": "xbulk",
             "version": "1.0.0",
-            "git_version": "e041726-modified"
+            "git_version": "e24050b-modified"
         },
         "framework": {
             "name": "elrond-wasm",
@@ -21,7 +21,7 @@
     "constructor": {
         "inputs": [
             {
-                "name": "owner",
+                "name": "new_owner",
                 "type": "optional<Address>",
                 "multi_arg": true
             }
@@ -30,14 +30,27 @@
     },
     "endpoints": [
         {
-            "name": "getOwner",
+            "name": "getOwners",
             "mutability": "readonly",
             "inputs": [],
             "outputs": [
                 {
-                    "type": "Address"
+                    "type": "variadic<Address>",
+                    "multi_result": true
                 }
             ]
+        },
+        {
+            "name": "addOwner",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "new_owner",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
         },
         {
             "name": "bulksend",
