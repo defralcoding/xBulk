@@ -9,7 +9,7 @@ deploy() {
     --recall-nonce \
     --pem=${USER_PEM} \
     --gas-limit=40000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy=${PROXY} --chain=${CHAIN_ID} || return
 }
 
@@ -17,7 +17,7 @@ upgrade() {
     mxpy --verbose contract upgrade ${CONTRACT_ADDRESS} --project=${PROJECT} \
     --recall-nonce --pem=${USER_PEM} \
     --gas-limit=50000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy=${PROXY} --chain=${CHAIN_ID} || return
 }
 
@@ -32,7 +32,7 @@ upgrade_devnet() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=50000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://devnet-gateway.multiversx.com" --chain=D || return
 }
 upgrade_testnet() {
@@ -40,7 +40,7 @@ upgrade_testnet() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=50000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://testnet-gateway.multiversx.com" --chain=T || return
 }
 
@@ -49,7 +49,7 @@ upgrade_mainnet_all() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://gateway.multiversx.com" --chain=1 
 
     sleep 10
@@ -58,7 +58,7 @@ upgrade_mainnet_all() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://gateway.multiversx.com" --chain=1 
 
     sleep 10
@@ -67,7 +67,7 @@ upgrade_mainnet_all() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://gateway.multiversx.com" --chain=1 || return
 }
 
@@ -123,7 +123,7 @@ upgrade_mainnet_2() {
     --recall-nonce \
     --ledger --ledger-address-index 3 \
     --gas-limit=40000000 \
-    --send --outfile="deploy.interaction.json" \
+    --send \
     --proxy="https://gateway.multiversx.com" --chain=1 || return
 }
 
