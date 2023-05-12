@@ -1,4 +1,4 @@
-# xBulk (Previously Elrond Bulk)
+# xBulk
 
 The fastest and easiest way to send bulk transactions on the MultiversX blockchain.
 
@@ -50,7 +50,7 @@ Transaction data field:
 bulksend@6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7ad6e7a@10a741a462780000
 ```
 
-Note that the address is converted in HEX and the amount is converted to its [denominated value](https://docs.elrond.com/developers/signing-transactions/signing-transactions/).
+Note that the address is converted in HEX and the amount is converted to its [denominated value](https://docs.multiversx.com/developers/signing-transactions/signing-transactions/).
 
 You can also send ESDTs for bulk transactions. Example:
 

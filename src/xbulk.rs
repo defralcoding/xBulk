@@ -1,12 +1,40 @@
 #![no_std]
 
 use core::ops::Deref;
-elrond_wasm::imports!();
+multiversx_sc::imports!();
 
-#[elrond_wasm::derive::contract]
-pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
+#[multiversx_sc::derive::contract]
+pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
     #[init]
-    fn init(&self) {}
+    fn init(&self, new_owner: OptionalValue<ManagedAddress>) {
+        if let Some(o) = new_owner.into_option() {
+            self.owners().insert(o);
+        }
+    }
+
+    #[view(getOwners)]
+    #[storage_mapper("owners")]
+    fn owners(&self) -> UnorderedSetMapper<ManagedAddress>;
+
+    #[only_owner]
+    #[endpoint(addOwner)]
+    fn add_owner(&self, new_owner: ManagedAddress) {
+        require!(
+            !self.owners().contains(&new_owner),
+            "The address is already an owner"
+        );
+        self.owners().insert(new_owner);
+    }
+
+    fn require_owner(&self) {
+        let owners = self.owners();
+        if !owners.is_empty() {
+            require!(
+                owners.contains(&self.blockchain().get_caller()),
+                "You are not allowed to call this method on this contract"
+            );
+        }
+    }
 
     #[payable("*")]
     #[endpoint]
@@ -17,6 +45,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
     ) {
+        self.require_owner();
+
         let mut amount_to_spend = BigUint::from(0u64);
 
         for destination in destinations.clone() {
@@ -45,6 +75,8 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
         #[payment_nonce] nonce: u64,
         destinations: MultiValueEncoded<ManagedAddress>,
     ) {
+        self.require_owner();
+
         let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
 
         for destination in destinations {
@@ -57,15 +89,17 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
     #[payable("*")]
     fn draw(
         &self,
-        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         participants: MultiValueEncoded<ManagedAddress>,
+        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
     ) {
+        self.require_owner();
+
         let part_vecs = participants.to_vec();
-        let mut rand_source = RandomnessSource::<Self::Api>::new();
+        let mut rand_source = RandomnessSource::new();
 
         let mut winners: ManagedVec<ManagedAddress> = ManagedVec::new();
 
-        for payment in &payments {
+        for payment in payments.deref() {
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
             //draw until we find a winner that has not already won
@@ -94,9 +128,11 @@ pub trait xBulk: elrond_wasm_modules::dns::DnsModule {
     #[endpoint(nftDistribution)]
     fn nft_distribution(
         &self,
-        #[payment_multi] payments: ManagedVec<EsdtTokenPayment<Self::Api>>,
         destinations: MultiValueEncoded<ManagedAddress>,
+        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
     ) {
+        self.require_owner();
+
         require!(
             payments.len() == destinations.len(),
             "The number of NFTs must be equal to the number of destinations"

@@ -1,27 +1,56 @@
 {
     "buildInfo": {
         "rustc": {
-            "version": "1.66.0-nightly",
-            "commitHash": "b8c35ca26b191bb9a9ac669a4b3f4d3d52d97fb1",
-            "commitDate": "2022-10-15",
+            "version": "1.71.0-nightly",
+            "commitHash": "7f94b314cead7059a71a265a8b64905ef2511796",
+            "commitDate": "2023-04-23",
             "channel": "Nightly",
-            "short": "rustc 1.66.0-nightly (b8c35ca26 2022-10-15)"
+            "short": "rustc 1.71.0-nightly (7f94b314c 2023-04-23)"
         },
         "contractCrate": {
             "name": "xbulk",
-            "version": "1.0.0"
+            "version": "2.0.0"
         },
         "framework": {
-            "name": "elrond-wasm",
-            "version": "0.34.1"
+            "name": "multiversx-sc",
+            "version": "0.41.0"
         }
     },
-    "name": "xBulk",
+    "name": "XBulk",
     "constructor": {
-        "inputs": [],
+        "inputs": [
+            {
+                "name": "new_owner",
+                "type": "optional<Address>",
+                "multi_arg": true
+            }
+        ],
         "outputs": []
     },
     "endpoints": [
+        {
+            "name": "getOwners",
+            "mutability": "readonly",
+            "inputs": [],
+            "outputs": [
+                {
+                    "type": "variadic<Address>",
+                    "multi_result": true
+                }
+            ]
+        },
+        {
+            "name": "addOwner",
+            "onlyOwner": true,
+            "mutability": "mutable",
+            "inputs": [
+                {
+                    "name": "new_owner",
+                    "type": "Address"
+                }
+            ],
+            "outputs": []
+        },
         {
             "name": "bulksend",
             "mutability": "mutable",

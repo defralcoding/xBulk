@@ -1,18 +1,18 @@
 [package]
 name = "xbulk"
-version = "1.0.0"
-authors = [ "Alessandro De Franceschi <info@defralcoding.it>",]
+version = "2.0.0"
+authors = ["Alessandro De Franceschi <info@defralcoding.it>"]
 edition = "2021"
 publish = false
 
 [lib]
 path = "src/xbulk.rs"
 
-[dependencies.elrond-wasm]
-version = "0.34.1"
+[dependencies.multiversx-sc]
+version = "0.41.0"
 
-[dependencies.elrond-wasm-modules]
-version = "0.34.0"
+[dependencies.multiversx-sc-modules]
+version = "0.41.0"
 
-[dev-dependencies.elrond-wasm-debug]
-version = "0.34.1"
+[dev-dependencies.multiversx-sc-scenario]
+version = "0.41.0"
