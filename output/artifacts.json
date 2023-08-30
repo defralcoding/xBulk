@@ -17,7 +17,7 @@
     "contracts": {
         "xbulk": {
             "version": "2.0.0",
-            "codehash": "1428d1987e5bd536d5bf3ca18a352b66cadd29eea72b561b749fbec62fbf2016",
+            "codehash": "79433ec09953450f7aaa19cbafb0ab21ef57c5b5e95f3a83bad41e166ac642f8",
             "artifacts": {
                 "bytecode": "xbulk.wasm",
                 "abi": "xbulk.abi.json",

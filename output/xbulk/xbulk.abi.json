@@ -94,7 +94,12 @@
                     "multi_arg": true
                 }
             ],
-            "outputs": []
+            "outputs": [
+                {
+                    "type": "variadic<Address>",
+                    "multi_result": true
+                }
+            ]
         },
         {
             "name": "nftDistribution",
