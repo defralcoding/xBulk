@@ -91,10 +91,10 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
         &self,
         participants: MultiValueEncoded<ManagedAddress>,
         #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
-    ) {
+    ) -> MultiValueEncoded<ManagedAddress> {
         self.require_owner();
 
-        let part_vecs = participants.to_vec();
+        let mut part_vecs = participants.to_vec();
         let mut rand_source = RandomnessSource::new();
 
         let mut winners: ManagedVec<ManagedAddress> = ManagedVec::new();
@@ -102,12 +102,9 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
         for payment in payments.deref() {
             let token_payment = EgldOrEsdtTokenPayment::from(payment);
 
-            //draw until we find a winner that has not already won
-            let mut winner_item =
-                part_vecs.get(rand_source.next_usize_in_range(0, participants.len()));
-            while winners.contains(&winner_item) {
-                winner_item = part_vecs.get(rand_source.next_usize_in_range(0, participants.len()));
-            }
+            //draw a winner
+            let winner_index = rand_source.next_usize_in_range(0, part_vecs.len());
+            let winner_item = part_vecs.get(winner_index);
 
             let winner = winner_item.deref().clone();
 
@@ -121,7 +118,12 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
                 token_payment.token_nonce,
                 &token_payment.amount,
             );
+
+            //remove the winner from the participants
+            part_vecs.remove(winner_index);
         }
+
+        winners.into()
     }
 
     #[payable("*")]
