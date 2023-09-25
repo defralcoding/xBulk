@@ -19,7 +19,7 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
                 let _ = self.owners().insert(o);
             }
             OptionalValue::None => {
-                let sc_owner = self.blockchain().get_owner_address();
+                let sc_owner = self.blockchain().get_caller();
                 let _ = self.owners().insert(sc_owner);
             }
         }
