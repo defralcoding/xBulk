@@ -2,13 +2,26 @@
 
 use core::ops::Deref;
 multiversx_sc::imports!();
+multiversx_sc::derive_imports!();
+
+#[derive(ManagedVecItem)]
+pub struct DestAmountPair<M: ManagedTypeApi> {
+    pub dest: ManagedAddress<M>,
+    pub amount: BigUint<M>,
+}
 
 #[multiversx_sc::derive::contract]
 pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
     #[init]
     fn init(&self, new_owner: OptionalValue<ManagedAddress>) {
-        if let Some(o) = new_owner.into_option() {
-            self.owners().insert(o);
+        match new_owner {
+            OptionalValue::Some(o) => {
+                let _ = self.owners().insert(o);
+            }
+            OptionalValue::None => {
+                let sc_owner = self.blockchain().get_caller();
+                let _ = self.owners().insert(sc_owner);
+            }
         }
     }
 
@@ -19,69 +32,58 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
     #[only_owner]
     #[endpoint(addOwner)]
     fn add_owner(&self, new_owner: ManagedAddress) {
-        require!(
-            !self.owners().contains(&new_owner),
-            "The address is already an owner"
-        );
-        self.owners().insert(new_owner);
+        let _ = self.owners().insert(new_owner);
     }
 
-    fn require_owner(&self) {
-        let owners = self.owners();
-        if !owners.is_empty() {
-            require!(
-                owners.contains(&self.blockchain().get_caller()),
-                "You are not allowed to call this method on this contract"
+    #[payable("*")]
+    #[endpoint(bulkSend)]
+    fn bulk_send(&self, destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>) {
+        self.require_owner();
+
+        let payment = self.call_value().egld_or_single_esdt();
+
+        let mut amount_to_spend = BigUint::zero();
+        let mut dest_amount_pairs = ManagedVec::<Self::Api, DestAmountPair<Self::Api>>::new();
+        for destination in destinations {
+            let (address_to_send, amount_to_send) = destination.into_tuple();
+            amount_to_spend += &amount_to_send;
+
+            dest_amount_pairs.push(DestAmountPair {
+                dest: address_to_send,
+                amount: amount_to_send,
+            });
+        }
+
+        require!(
+            payment.amount == amount_to_spend,
+            "The sent amount must be equal to the sum of each transaction you want to send"
+        );
+
+        for pair in &dest_amount_pairs {
+            self.send().direct(
+                &pair.dest,
+                &payment.token_identifier,
+                payment.token_nonce,
+                &pair.amount,
             );
         }
     }
 
     #[payable("*")]
-    #[endpoint]
-    fn bulksend(
-        &self,
-        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
-        #[payment_amount] payment_amount: BigUint,
-        #[payment_nonce] nonce: u64,
-        destinations: MultiValueEncoded<MultiValue2<ManagedAddress, BigUint>>,
-    ) {
+    #[endpoint(bulkSendSameAmount)]
+    fn bulk_send_same_amount(&self, destinations: MultiValueEncoded<ManagedAddress>) {
         self.require_owner();
 
-        let mut amount_to_spend = BigUint::from(0u64);
-
-        for destination in destinations.clone() {
-            let (_address_to_send, amount_to_send) = destination.into_tuple();
-            amount_to_spend += &amount_to_send;
-        }
-
-        require!(
-            payment_amount == amount_to_spend,
-            "The sent amount must be equal to the sum of each transaction you want to send"
-        );
+        let payment = self.call_value().egld_or_single_esdt();
+        let amount_to_send = payment.amount / (destinations.len() as u64);
 
         for destination in destinations {
-            let (address_to_send, amount_to_send) = destination.into_tuple();
-            self.send()
-                .direct(&address_to_send, &payment_token, nonce, &amount_to_send);
-        }
-    }
-
-    #[payable("*")]
-    #[endpoint(bulksendSameAmount)]
-    fn bulksend_same_amount(
-        &self,
-        #[payment_token] payment_token: EgldOrEsdtTokenIdentifier,
-        #[payment_amount] payment_amount: BigUint,
-        #[payment_nonce] nonce: u64,
-        destinations: MultiValueEncoded<ManagedAddress>,
-    ) {
-        self.require_owner();
-
-        let amount_to_send = payment_amount / BigUint::from(destinations.len() as u64);
-
-        for destination in destinations {
-            self.send()
-                .direct(&destination, &payment_token, nonce, &amount_to_send);
+            self.send().direct(
+                &destination,
+                &payment.token_identifier,
+                payment.token_nonce,
+                &amount_to_send,
+            );
         }
     }
 
@@ -90,9 +92,10 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
     fn draw(
         &self,
         participants: MultiValueEncoded<ManagedAddress>,
-        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
     ) -> MultiValueEncoded<ManagedAddress> {
         self.require_owner();
+
+        let payments = self.call_value().all_esdt_transfers();
 
         let mut part_vecs = participants.to_vec();
         let mut rand_source = RandomnessSource::new();
@@ -100,24 +103,21 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
         let mut winners: ManagedVec<ManagedAddress> = ManagedVec::new();
 
         for payment in payments.deref() {
-            let token_payment = EgldOrEsdtTokenPayment::from(payment);
-
-            //draw a winner
+            // draw a winner
             let winner_index = rand_source.next_usize_in_range(0, part_vecs.len());
             let winner_item = part_vecs.get(winner_index);
-
             let winner = winner_item.deref().clone();
 
-            //add the winner to the winners array
-            winners.push(winner.clone());
-
-            //send the token to the winner
-            self.send().direct(
+            // send the token to the winner
+            self.send().direct_esdt(
                 &winner,
-                &token_payment.token_identifier,
-                token_payment.token_nonce,
-                &token_payment.amount,
+                &payment.token_identifier,
+                payment.token_nonce,
+                &payment.amount,
             );
+
+            // add the winner to the winners array
+            winners.push(winner);
 
             //remove the winner from the participants
             part_vecs.remove(winner_index);
@@ -128,32 +128,31 @@ pub trait XBulk: multiversx_sc_modules::dns::DnsModule {
 
     #[payable("*")]
     #[endpoint(nftDistribution)]
-    fn nft_distribution(
-        &self,
-        destinations: MultiValueEncoded<ManagedAddress>,
-        #[payment_multi] payments: ManagedRef<'static, ManagedVec<EsdtTokenPayment<Self::Api>>>,
-    ) {
+    fn nft_distribution(&self, destinations: MultiValueEncoded<ManagedAddress>) {
         self.require_owner();
 
+        let payments = self.call_value().all_esdt_transfers();
         require!(
             payments.len() == destinations.len(),
             "The number of NFTs must be equal to the number of destinations"
         );
 
-        let destinations_vec = destinations.to_vec();
-
-        for i in 0..payments.len() {
-            let payment = payments.get(i);
-            let destination = destinations_vec.get(i);
-
-            let token_payment = EgldOrEsdtTokenPayment::from(payment);
-
-            self.send().direct(
-                &destination,
-                &token_payment.token_identifier,
-                token_payment.token_nonce,
-                &token_payment.amount,
+        for (dest, payment) in destinations.into_iter().zip(payments.iter()) {
+            // send the token to the winner
+            self.send().direct_esdt(
+                &dest,
+                &payment.token_identifier,
+                payment.token_nonce,
+                &payment.amount,
             );
         }
+    }
+
+    fn require_owner(&self) {
+        let caller = self.blockchain().get_caller();
+        require!(
+            self.owners().contains(&caller),
+            "You are not allowed to call this method on this contract"
+        );
     }
 }
