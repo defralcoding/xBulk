@@ -72,4 +72,4 @@ Insert the list of the partecipants and the prizes you want to send, the smart c
 
 You can get in touch with us in our [Telegram Chat](https://t.me/tortugastaking)
 
-Made with ❤️ by DefralCoding & Tortuga Staking.
+Made with ❤️ by DB Coding & Tortuga Staking.

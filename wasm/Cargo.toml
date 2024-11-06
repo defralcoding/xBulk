@@ -1,7 +1,7 @@
 [package]
 name = "xbulk-wasm"
 version = "2.0.0"
-authors = ["Alessandro De Franceschi <info@defralcoding.it>"]
+authors = ["Alessandro De Franceschi <info@dbcodingsrl.com>"]
 edition = "2021"
 publish = false
 
